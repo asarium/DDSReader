@@ -32,7 +32,7 @@ namespace DDSReader.Internal.Decoders
 
             var frameData = new byte[scanlineSize * height];
 
-            Parallel.ForEach(RangeEnumerable.Range(0, (int) width, 4), new ParallelOptions() {MaxDegreeOfParallelism = 1}, y =>
+            Parallel.ForEach(RangeEnumerable.Range(0, (int) width, 4), new ParallelOptions(),y =>
             {
                 var colors = new RGBAColor[4];
                 colors[0].a = 0xFF;
