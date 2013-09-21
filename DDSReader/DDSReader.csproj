@@ -53,6 +53,7 @@
     <Compile Include="Internal\Decoders\AbstractDecoder.cs" />
     <Compile Include="Internal\Decoders\DXT1Decoder.cs" />
     <Compile Include="Internal\Decoders\DXT2Decoder.cs" />
+    <Compile Include="Internal\Decoders\DXT3Decoder.cs" />
     <Compile Include="Internal\Decoders\DXT5Decoder.cs" />
     <Compile Include="Internal\Decoders\DXTDecoder.cs" />
     <Compile Include="Internal\IDataDecoder.cs" />

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DDSReader.Internal.Decoders
 {
-    public class DXT2Decoder : DXT1Decoder
+    public class DXT2Decoder : DXT3Decoder
     {
         public DXT2Decoder(DDSHeader header) : base(header)
         {
