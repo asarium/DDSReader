@@ -16,13 +16,13 @@ namespace DDSReader
     {
         public static async Task<DDSImage> ReadImageAsync(string path)
         {
-            using (var stream = new FileStream(path, FileMode.Open))
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 return await ReadImageAsync(stream);
             }
         }
 
-        public static async Task<DDSImage> ReadImageAsync(Stream stream)
+        public static async Task<DDSHeader> ReadHeaderAsync(Stream stream)
         {
             var header = await stream.ReadStructAsync<DDSHeader>();
 
@@ -41,7 +41,14 @@ namespace DDSReader
                 throw new NotSupportedException("Invalid pixel format size value!");
             }
 
-            var workImage = new DDSImage(header.dwWidth, header.dwHeight);
+            return header;
+        }
+
+        public static async Task<DDSImage> ReadImageAsync(Stream stream)
+        {
+            var header = await ReadHeaderAsync(stream);
+
+            var workImage = new DDSImage(header.Width(), header.Height());
 
             CheckHeaderFlags(workImage, header.dwFlags);
 
@@ -67,7 +74,10 @@ namespace DDSReader
                 height = Math.Max(1, height / 2);
             }
 
-            if (decoder==null)throw new NotSupportedException("Unsupported texture format!");
+            if (decoder == null)
+            {
+                throw new NotSupportedException("Unsupported texture format!");
+            }
 
             return workImage;
         }
@@ -94,32 +104,50 @@ namespace DDSReader
 
         private static IDataDecoder ChooseDecoder(DDSHeader header)
         {
-            if (header.ddspf.dwFlags.HasFlag(DDPF.FOURCC))
+            switch (header.GetPixelFormat())
             {
-                var fourcc = header.ddspf.dwFourCC;
-
-                switch (fourcc)
-                {
-                    case FourCCValue.DXT1:
-                        return new DXT1Decoder(header);
-                    case FourCCValue.DXT2:
-                    case FourCCValue.DXT3:
-                    case FourCCValue.DXT4:
-                    case FourCCValue.DXT5:
-                        return new DXT5Decoder(header);
-                    case FourCCValue.ATI1:
-                    case FourCCValue.ATI2:
-                    case FourCCValue.RXGB:
-                    case FourCCValue.A16B16G16R16:
-                    case FourCCValue.R16F:
-                    case FourCCValue.G16R16F:
-                    case FourCCValue.A16B16G16R16F:
-                    case FourCCValue.R32F:
-                    case FourCCValue.G32R32F:
-                    case FourCCValue.A32B32G32R32F:
-                    default:
-                        return null;
-                }
+                case PixelFormat.ARGB:
+                    break;
+                case PixelFormat.RGB:
+                    break;
+                case PixelFormat.DXT1:
+                    return new DXT1Decoder(header);
+                case PixelFormat.DXT2:
+                    return new DXT2Decoder(header);
+                case PixelFormat.DXT3:
+                    break;
+                case PixelFormat.DXT4:
+                    break;
+                case PixelFormat.DXT5:
+                    return new DXT5Decoder(header);
+                case PixelFormat._3DC:
+                    break;
+                case PixelFormat.ATI1N:
+                    break;
+                case PixelFormat.LUMINANCE:
+                    break;
+                case PixelFormat.LUMINANCE_ALPHA:
+                    break;
+                case PixelFormat.RXGB:
+                    break;
+                case PixelFormat.A16B16G16R16:
+                    break;
+                case PixelFormat.R16F:
+                    break;
+                case PixelFormat.G16R16F:
+                    break;
+                case PixelFormat.A16B16G16R16F:
+                    break;
+                case PixelFormat.R32F:
+                    break;
+                case PixelFormat.G32R32F:
+                    break;
+                case PixelFormat.A32B32G32R32F:
+                    break;
+                case PixelFormat.UNKNOWN:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return null;
