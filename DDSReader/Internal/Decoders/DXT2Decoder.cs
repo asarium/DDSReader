@@ -18,7 +18,7 @@ namespace DDSReader.Internal.Decoders
             return dxt1Data;
         }
 
-        private static void CorrectPreMult(byte[] dxt1Data)
+        public static void CorrectPreMult(byte[] dxt1Data)
         {
             for (var i = 0; i < dxt1Data.Length; i += BytesPerPixel)
             {

@@ -117,7 +117,7 @@ namespace DDSReader
                 case PixelFormat.DXT3:
                     return new DXT3Decoder(header);
                 case PixelFormat.DXT4:
-                    break;
+                    return new DXT4Decoder(header);
                 case PixelFormat.DXT5:
                     return new DXT5Decoder(header);
                 case PixelFormat._3DC:
